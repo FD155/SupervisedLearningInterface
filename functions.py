@@ -33,7 +33,7 @@ def OneHotEncoder__(X):
 
 
 
-def adl(X,y,w_solver=None,nb_shrinkage=None,nb_components=None,w_covariance=None,choisis=False,params=None):
+def adl(X,y,solver=None,nb_shrinkage=None,nb_components=None,w_covariance=None,choisis=False,params=None):
     start = time()
     X=OneHotEncoder__(X)
     
@@ -45,11 +45,11 @@ def adl(X,y,w_solver=None,nb_shrinkage=None,nb_components=None,w_covariance=None
         lda = LinearDiscriminantAnalysis(solver='lsqr')
         lda.set_params(**best_param)
     else:
-        lda = LinearDiscriminantAnalysis(solver=w_solver,shrinkage=nb_shrinkage,n_components=nb_components,store_covariance=w_covariance)
+        lda = LinearDiscriminantAnalysis(solver=solver)
     
-    f1 = cross_val_score(lda,X,y,cv=5,scoring="f1_micro").mean()
-    recall = cross_val_score(lda,X,y,cv=5,scoring="recall_micro").mean()
-    precision = cross_val_score(lda,X,y,cv=5,scoring="precision_micro").mean()
+    f1 = cross_val_score(lda,X,y,cv=5,scoring="f1_macro").mean()
+    recall = cross_val_score(lda,X,y,cv=5,scoring="recall_macro").mean()
+    precision = cross_val_score(lda,X,y,cv=5,scoring="precision_macro").mean()
     y_pred = cross_val_predict(lda, X, y, cv=5)
 
     done = time()
@@ -64,7 +64,7 @@ def adl(X,y,w_solver=None,nb_shrinkage=None,nb_components=None,w_covariance=None
     return(result)
 
 
-def knnClass(data,X,y,cat=None,params=None,nb_neighbors=None,nweights=None,nmetric=None,nalgorithm=None,choisis = False):
+def knnClass(X,y,cat=None,params=None,n_neighbors=None,nweights=None,nmetric=None,nalgorithm=None,choisis = False):
     start = time()
     X=OneHotEncoder__(X)
 
@@ -77,12 +77,12 @@ def knnClass(data,X,y,cat=None,params=None,nb_neighbors=None,nweights=None,nmetr
         knn.set_params(**best_param)
         
     else:
-        knn = KNeighborsClassifier(n_neighbors=nb_neighbors)
+        knn = KNeighborsClassifier(n_neighbors=n_neighbors)
     
 
-    f1 = cross_val_score(knn,X,y,cv=5,scoring="f1_micro").mean()
-    recall = cross_val_score(knn,X,y,cv=5,scoring="recall_micro").mean()
-    precision = cross_val_score(knn,X,y,cv=5,scoring="precision_micro").mean()          
+    f1 = cross_val_score(knn,X,y,cv=5,scoring="f1_macro").mean()
+    recall = cross_val_score(knn,X,y,cv=5,scoring="recall_macro").mean()
+    precision = cross_val_score(knn,X,y,cv=5,scoring="precision_macro").mean()          
     print(f1, recall, precision)
     y_pred = cross_val_predict(knn, X, y, cv=5)
     
@@ -126,7 +126,7 @@ def knn_reg(X, Y, n_neighbors=5, choisis=False):
     result['mse'] = np.mean(Scores['test_neg_mean_squared_error']) 
     return(result)
 
-def decTree(X, Y, max_depth=None, min_leaf=1, splitter="best", min_samples_split=2, choisis=False): 
+def decTree(X, Y, max_depth=None, min_samples_leaf=1, splitter="best", min_samples_split=2, choisis=False): 
     start = time()
     X=OneHotEncoder__(X)
 
@@ -139,7 +139,7 @@ def decTree(X, Y, max_depth=None, min_leaf=1, splitter="best", min_samples_split
          dt=DecisionTreeRegressor()
          dt.set_params(**grille.best_params_)
     else:
-        dt = DecisionTreeRegressor(splitter=splitter, max_depth=max_depth, min_samples_leaf=min_leaf, min_samples_split=min_samples_split)
+        dt = DecisionTreeRegressor(splitter=splitter, max_depth=max_depth, min_samples_leaf=min_samples_leaf, min_samples_split=min_samples_split)
     
     dt.fit(X, Y)
   
@@ -151,7 +151,7 @@ def decTree(X, Y, max_depth=None, min_leaf=1, splitter="best", min_samples_split
     elapsed = done - start
     
     result=dict()
-    result["mso"]=np.mean(Scores['test_neg_mean_squared_error'])
+    result["mse"]=np.mean(Scores['test_neg_mean_squared_error'])
     result["R2"]= np.mean(Scores['test_r2'])
     result["temps"]= elapsed
     result["prediction"]=y_pred
@@ -179,7 +179,7 @@ def RegLineaire(X, Y, alpha =1 , l1_ratio=0.5, choisis=False):
     elapsed = done - start
     
     result=dict()
-    result["mso"]=np.mean(Scores['test_neg_mean_squared_error']) 
+    result["mse"]=np.mean(Scores['test_neg_mean_squared_error']) 
     result["R2"]= np.mean(Scores['test_r2'])
     result["temps"]= elapsed
     result["prediction"]=y_pred
@@ -244,7 +244,7 @@ def regressionLog(X, Y ,solver="saga", l1_ratio= 0, max_iter=5000, choisis=False
     result["precision"]= precision
     result["rappel"]= recall
     result["temps"]= elapsed
-    result["y_pred"]=y_pred
+    result["prediction"]=y_pred
     return(result)
 
 
@@ -268,7 +268,7 @@ def svr_reg(X,Y, kernel='rbf', gamma=0.001, C=0.5, degree=2, choisis=False):
         svr = SVR()
         svr.set_params(**grille.best_params_)
     else:
-        svr=SVR(kernel=kernel, gamma=gamma, degree=degree, C=C)
+        svr=SVR(kernel=kernel, gamma=gamma, C=C)
         
     svr.fit(X,Y)
     

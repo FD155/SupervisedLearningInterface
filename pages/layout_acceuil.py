@@ -16,6 +16,8 @@ os.chdir(str(pathlib.Path(__file__).parent.parent)+"/assets")
 
 im = Image.open('logo.png')
 html.Img(src=im, height="40px")
+bgim = Image.open('accueil.png')
+html.Img(src=im, height="40px")
 
 body = dbc.Container([
         html.Br(),
@@ -30,7 +32,7 @@ body = dbc.Container([
                             html.P(
                                 "\
                             Vous êtes sur la page d'acceuil ! \
-                            Nous vous prsentons ici une application destinée au Machine Learning",
+                            Nous vous présentons ici une application destinée au Machine Learning",
 
                                 style={"color": "#000406"},
 
@@ -38,7 +40,7 @@ body = dbc.Container([
                             html.P(
                                 "\
                             Choisissez vos données.\
-                        Vous pouvez accéder au dashboard via la barre de navigation ou en cliquant directement ci-dessous.",
+                        Vous pourrez accéder à plusieurs informations concernant ces données ; Statistiques descriptives, modèle de Machine Learning...",
 
 
                                 style={"color": "#000406"},
@@ -71,45 +73,27 @@ body = dbc.Container([
 
                          ),style={'color':'black','backgroundColor':'white'})], justify="center", align="center"
                     ),
-            
-            
-            
                         html.Br([]),
                         html.Div(id='json_info', style={'display':'none'}),
                         html.Div(id='info_output'),
-                           
                         html.Br([]),                    
                         html.Div(id='json_df', style={'display':'none'}),
                         html.Div(id='df_output'),
-                       
                         html.Br([]),
                         html.Div(id='Stat_output'),
                         html.Br([]),  
-
-
-
-
                         html.Br([]),
                         html.Div(id='Var_cible'),
                         html.Br([]),  
-
                         html.Div(id='Var_desc'), 
                         html.Br([]),  
-
-
                         html.Div(id='Var_type'), 
                         html.Br([]),  
-
                         html.Div(id='param'),                       
-
                         html.Br([]),  
-
                         html.Div(id='submit'),   
-                        
-                        
                         html.Div(id='ML'),  
-
-
+                        html.Div(id='paramFunct', style={'display':'none'}),
                         html.Br([]),  
                         html.Div( dbc.Navbar(
                             [
@@ -117,7 +101,8 @@ body = dbc.Container([
                                     [
                                         dbc.Col(dbc.NavLink("M2 SISE - Université Lyon 2 ", href="https://www.univ-lyon2.fr/master-2-informatique-statistique-et-informatique-sise-1",
                                                             style={'color':'white'}),width={"size": 6}),
-                                         dbc.Col(html.Span('Auteurs : Afaf BEN HAJ, Franck DORONZO et Marie VACHET  ', style={'color':'#ffff'}), 
+                                         dbc.Col(html.Span('Auteurs : Afaf BEN HAJ, Franck DORONZO et Marie VACHET  ', style={'width': '100%','lineHeight': '50px', 
+                        'height': '50px','color':'#ffff'}), 
                                         width={"size": 6}),
                                     ],  className="g-0", justify="end"
                                     
@@ -130,9 +115,4 @@ body = dbc.Container([
      html.Br(),
 ],style={"height": "100vh"}
 )
-
-
-
-
-
-layout_acceuil =  html.Div([body],style={'background-image': 'url("/accueil.jpg")'})
+layout_acceuil =  html.Div([body],style={'background-image': 'url("/assets/accueil2.png")'})
